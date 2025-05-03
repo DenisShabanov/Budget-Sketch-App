@@ -1,30 +1,33 @@
+import 'package:buget_sketch_app/sketch_page/notifier/notifier.dart';
+import 'package:buget_sketch_app/sketch_page/provider/riverpod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SketchPageChekBox extends StatefulWidget {
+class SketchPageChekBox extends ConsumerStatefulWidget {
   const SketchPageChekBox({super.key});
 
   @override
-  State<SketchPageChekBox> createState() => _SketchPageChekBoxState();
+  ConsumerState<SketchPageChekBox> createState() => _SketchPageChekBoxState();
 }
 
-enum TransactionType { income, expense }
-
-class _SketchPageChekBoxState extends State<SketchPageChekBox> {
-  TransactionType? _selectedType;
-  void onChanged(TransactionType? value) {
-    setState(() {
-      _selectedType = value;
-    });
-  }
-
+class _SketchPageChekBoxState extends ConsumerState<SketchPageChekBox> {
   @override
   Widget build(BuildContext context) {
+    final pickChekBox = ref.watch(inputControllerProvider);
+
     return Row(
       children: [
         Radio<TransactionType>(
           value: TransactionType.income,
-          groupValue: _selectedType,
-          onChanged: onChanged,
+          groupValue: pickChekBox,
+          onChanged: (value) {
+            if (value != null) {
+              ref
+                  .read(inputControllerProvider.notifier)
+                  .saveTransactionType(value);
+            }
+          },
+
           activeColor: Color.fromARGB(255, 147, 51, 234),
           visualDensity: VisualDensity(horizontal: -4),
         ),
@@ -32,8 +35,14 @@ class _SketchPageChekBoxState extends State<SketchPageChekBox> {
 
         Radio<TransactionType>(
           value: TransactionType.expense,
-          groupValue: _selectedType,
-          onChanged: onChanged,
+          groupValue: pickChekBox,
+          onChanged: (value) {
+            if (value != null) {
+              ref
+                  .read(inputControllerProvider.notifier)
+                  .saveTransactionType(value);
+            }
+          },
           activeColor: Color.fromARGB(255, 147, 51, 234),
           visualDensity: VisualDensity(horizontal: -4),
         ),
