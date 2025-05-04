@@ -45,11 +45,41 @@ class InputFiledsControllerNotifier extends Notifier<InputFieldsModel> {
     print(state);
   }
 
-  void save() {
-    // Тут можно передать данные в базу или другой список
+  void saveTransaction(TransactionType type, double amount) {
+    if (type == TransactionType.income) {
+      state = state.copyWith(totalIncome: state.totalIncome + amount);
+    } else {
+      state = state.copyWith(totalExpense: state.totalExpense + amount);
+    }
+
+    print("Доход: ${state.totalIncome}");
+    print("Расход: ${state.totalExpense}");
+    print("Баланс: ${state.balance}");
+  }
+
+  void save(TransactionType type) {
+    if (type == TransactionType.income) {
+      state = state.copyWith(totalIncome: state.totalIncome + state.amount);
+    } else {
+      state = state.copyWith(totalExpense: state.totalExpense + state.amount);
+    }
+
     print('Сохраняем данные:');
     print('Сумма: ${state.amount}');
     print('Категория: ${state.category}');
     print('Заметка: ${state.note}');
+    print('Доход: ${state.totalIncome}');
+    print('Расход: ${state.totalExpense}');
+    print('Баланс: ${state.balance}');
+  }
+
+  void resetFields() {
+    state = InputFieldsModel(
+      amount: 0,
+      category: 'Выберите категорию',
+      note: 'Добавьте заметку',
+      totalIncome: state.totalIncome,
+      totalExpense: state.totalExpense,
+    );
   }
 }

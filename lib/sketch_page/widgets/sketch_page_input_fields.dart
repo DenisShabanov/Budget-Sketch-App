@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SketchPageInputFields extends ConsumerWidget {
-  const SketchPageInputFields({super.key});
+  SketchPageInputFields({super.key});
+  final amountController = TextEditingController();
+  final categoryController = TextEditingController();
+  final noteController = TextEditingController();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -14,6 +17,7 @@ class SketchPageInputFields extends ConsumerWidget {
         Text('Сумма'),
         const SizedBox(height: 10),
         TextField(
+          controller: amountController,
           style: Theme.of(context).textTheme.bodyMedium,
           decoration: InputDecoration(
             labelText: "0",
@@ -33,6 +37,7 @@ class SketchPageInputFields extends ConsumerWidget {
         Text('Категория'),
         const SizedBox(height: 10),
         TextField(
+          controller: categoryController,
           style: Theme.of(context).textTheme.bodyMedium,
           decoration: InputDecoration(
             labelText: "Выберите категорию",
@@ -48,6 +53,7 @@ class SketchPageInputFields extends ConsumerWidget {
         Text('Заметка (необязательно)'),
         const SizedBox(height: 10),
         TextField(
+          controller: noteController,
           style: Theme.of(context).textTheme.bodyMedium,
           decoration: InputDecoration(
             labelText: "Добавьте заметку",
@@ -62,7 +68,25 @@ class SketchPageInputFields extends ConsumerWidget {
           width: double.infinity,
           child: ElevatedButton(
             onPressed: () {
-              ref.read(inputFieldsControllerProvider.notifier).save();
+              final transactionType = ref.read(inputControllerProvider);
+              final notifier = ref.read(inputFieldsControllerProvider.notifier);
+
+              notifier.save(transactionType); // сохраняем
+              notifier.resetFields();
+
+              amountController.clear();
+              categoryController.clear();
+              noteController.clear();
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Транзакция сохранена!'),
+                  duration: Duration(seconds: 2),
+                  backgroundColor: Colors.green,
+                ),
+              );
+
+              Navigator.of(context).pop();
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Color.fromARGB(255, 147, 51, 234),

@@ -1,17 +1,25 @@
+import 'package:buget_sketch_app/sketch_page/notifier/notifier.dart';
+import 'package:buget_sketch_app/sketch_page/provider/riverpod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class MainPageGeneralInformation extends StatefulWidget {
+class MainPageGeneralInformation extends ConsumerStatefulWidget {
   const MainPageGeneralInformation({super.key});
 
   @override
-  State<MainPageGeneralInformation> createState() =>
+  ConsumerState<MainPageGeneralInformation> createState() =>
       _MainPageGeneralInformationState();
 }
 
 class _MainPageGeneralInformationState
-    extends State<MainPageGeneralInformation> {
+    extends ConsumerState<MainPageGeneralInformation> {
   @override
   Widget build(BuildContext context) {
+    final inputState = ref.watch(inputFieldsControllerProvider);
+
+    final income = inputState.totalIncome;
+    final expense = inputState.totalExpense;
+    final balance = inputState.balance;
     return Container(
       height: MediaQuery.of(context).size.height * 0.2,
       width: MediaQuery.of(context).size.width,
@@ -33,7 +41,7 @@ class _MainPageGeneralInformationState
               ).bodyLarge?.copyWith(fontWeight: FontWeight.w700),
             ),
             Text(
-              "\$125,400",
+              "\$${balance.toStringAsFixed(2)}",
               style: TextTheme.of(
                 context,
               ).labelLarge?.copyWith(color: Colors.white),
@@ -56,7 +64,7 @@ class _MainPageGeneralInformationState
                           ).bodyMedium?.copyWith(color: Colors.white),
                         ),
                         Text(
-                          '\$45,200',
+                          '\$${expense.toStringAsFixed(2)}',
                           style: TextTheme.of(context).bodySmall,
                         ),
                       ],
@@ -75,7 +83,7 @@ class _MainPageGeneralInformationState
                           ).bodyMedium?.copyWith(color: Colors.white),
                         ),
                         Text(
-                          '\$170,600',
+                          '\$${income.toStringAsFixed(2)}',
                           style: TextTheme.of(context).bodySmall,
                         ),
                       ],
